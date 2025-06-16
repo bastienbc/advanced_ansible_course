@@ -10,8 +10,6 @@
       loop:
         - apache2
         - mysql-server
-      register: aptinstall
-
 
 - hosts: Master
   name: TP3 / Master
@@ -50,7 +48,8 @@
         group: root
         mode: "0644"
       when: '"apache2" in ansible_facts.packages'
-      register: apache2index
+      notify:
+        - Restart apache
 
     - name: Deploy index.html
       ansible.builtin.template:
@@ -60,11 +59,17 @@
         owner: root
         group: root
         mode: "0644"
-      when: '"apache2" in ansible_facts.packages'
-      register: apache2index
+      when: '"nginx" in ansible_facts.packages'
+      notify:
+        - Restart nginx
 
-    - name: restart apache
+  handlers:
+    - name: Restart apache
       ansible.builtin.service:
         name: apache2
         state: restarted
-      when: apache2index is changed
+
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
