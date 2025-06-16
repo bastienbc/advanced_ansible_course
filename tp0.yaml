@@ -1,5 +1,5 @@
 - name: TP0
-  hosts: all
+  hosts: Slaves:Master
   become: yes
 
   tasks:
