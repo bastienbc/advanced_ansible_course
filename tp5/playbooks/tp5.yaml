@@ -1,0 +1,16 @@
+- import_playbook: ../../tp3/playbooks/tp3.yaml
+- import_playbook: ../../tp4/playbooks/tp4.yaml
+
+- name: date
+  hosts: all
+  become: true
+
+  tasks:
+    - name: register last_changed
+      ansible.builtin.template:
+        src: date.j2
+        dest: /etc/last_changed
+        owner: root
+        group: root
+        mode: '0644'
+
