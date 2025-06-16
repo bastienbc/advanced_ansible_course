@@ -1,0 +1,6 @@
+- name: Install docker
+  hosts: all
+  become: yes
+
+  roles:
+    - { name: geerlingguy.docker, tags: [docker] }
