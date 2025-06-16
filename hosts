@@ -8,3 +8,6 @@ Master
 [Slaves]
 Slave1
 Slave2
+
+[apache]
+Slave1

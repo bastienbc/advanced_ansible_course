@@ -1,4 +1,4 @@
-- hosts: Slaves
+- hosts: Slaves:&apache
   name: TP2
   become: yes
 
