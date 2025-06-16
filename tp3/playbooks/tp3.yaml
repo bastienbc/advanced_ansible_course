@@ -63,6 +63,15 @@
       notify:
         - Restart nginx
 
+    - name: Deploy /etc/jour
+      ansible.builtin.template:
+        src: jour.j2
+        dest: /etc/jour
+        force: yes
+        owner: root
+        group: root
+        mode: "0644"
+
   handlers:
     - name: Restart apache
       ansible.builtin.service:
