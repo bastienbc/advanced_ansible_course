@@ -1,0 +1,19 @@
+- name: TP0
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install vim
+      ansible.builtin.apt:
+        name: vim
+        state: present
+
+    - name: Get stats of /etc/passwd
+      ansible.builtin.stat:
+        path: /etc/passwd
+      register: passwdfile
+
+    - ansible.builtin.fail:
+        msg: /etc/passwd doesn't exist
+      when: not passwdfile.stat.exists
+
