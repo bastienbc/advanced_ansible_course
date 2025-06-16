@@ -1,0 +1,24 @@
+- hosts: Slaves
+  name: TP2
+  become: yes
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - mysql-server
+      register: aptinstall
+
+    - name: Deploy index.html
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        force: yes
+        owner: root
+        group: root
+      loop: "{{ aptinstall.results }}"
+      when:
+        - item.item == "apache2"
