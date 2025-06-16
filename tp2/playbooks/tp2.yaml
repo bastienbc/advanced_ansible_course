@@ -19,6 +19,15 @@
         force: yes
         owner: root
         group: root
+        mode: "0644"
       loop: "{{ aptinstall.results }}"
       when:
         - item.item == "apache2"
+        - item.changed
+      register: apache2index
+
+    - name: restart apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
+      when: apache2index is changed
