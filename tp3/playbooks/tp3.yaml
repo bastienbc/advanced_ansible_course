@@ -1,5 +1,5 @@
 - hosts: Slaves
-  name: TP2
+  name: TP3 / apache
   become: yes
 
   tasks:
@@ -12,8 +12,45 @@
         - mysql-server
       register: aptinstall
 
+
+- hosts: Master
+  name: TP3 / Master
+  become: yes
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - nginx
+        - cowsay
+
+- hosts: all
+  name: TP3 / ufw
+  become: yes
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
     - ansible.builtin.package_facts:
         manager: auto 
+
+    - name: Deploy index.html
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        force: yes
+        owner: root
+        group: root
+        mode: "0644"
+      when: '"apache2" in ansible_facts.packages'
+      register: apache2index
 
     - name: Deploy index.html
       ansible.builtin.template:
