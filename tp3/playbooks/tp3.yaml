@@ -63,6 +63,15 @@
       notify:
         - Restart nginx
 
+    - name: Start services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+      when: item in ansible_facts.packages
+      loop:
+        - nginx
+        - apache2
+
     - name: Deploy /etc/jour
       ansible.builtin.template:
         src: jour.j2
