@@ -11,3 +11,6 @@ Slave2
 
 [apache]
 Slave1
+
+[web]
+Slave1

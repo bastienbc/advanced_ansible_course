@@ -1,0 +1,41 @@
+- hosts: web
+  name: TP6 / apache
+  become: true
+
+  tasks:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - php>=7.4
+
+    - name: Update packages facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Enable the Apache2 module rewrite
+      community.general.apache2_module:
+        state: present
+        name: rewrite
+      when: '"apache2" in ansible_facts.packages'
+      notify:
+        - Restart apache
+
+    - name: Start services
+      ansible.builtin.service:
+        name: apache2
+        state: started
+      when: '"apache2" in ansible_facts.packages'
+
+  handlers:
+    - name: Restart apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
