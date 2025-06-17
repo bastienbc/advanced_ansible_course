@@ -1,0 +1,9 @@
+- hosts: Master
+  name: play with filters
+
+  tasks:
+    - name: Read CSV
+      ansible.builtin.debug:
+        msg: "{{ lookup('file', 'temperature.csv') | community.general.from_csv | unique(attribute='time') | sort(attribute='time') }}"
+      delegate_to: localhost
+      run_once: true
