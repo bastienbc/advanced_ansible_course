@@ -14,3 +14,6 @@ Slave1
 
 [web]
 Slave1
+
+[db]
+Slave2

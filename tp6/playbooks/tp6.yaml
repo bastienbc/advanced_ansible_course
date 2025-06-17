@@ -1,5 +1,5 @@
-- hosts: web
-  name: TP6 / apache
+- hosts: web:db
+  name: TP6 / prepare
   become: true
 
   tasks:
@@ -8,6 +8,12 @@
         update_cache: true
         cache_valid_time: 3600
 
+- hosts: web
+  name: TP6 / apache
+  gather_facts: false
+  become: true
+
+  tasks:
     - name: Install dependencies
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -39,3 +45,24 @@
       ansible.builtin.service:
         name: apache2
         state: restarted
+
+- hosts: db
+  name: TP6 / database
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: mysql-server
+        state: present
+
+    - name: Update packages facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Start services
+      ansible.builtin.service:
+        name: mysql
+        state: started
+      when: '"mysql-server" in ansible_facts.packages'
