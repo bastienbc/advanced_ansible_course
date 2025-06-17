@@ -3,7 +3,17 @@
 
   tasks:
     - name: Read CSV
-      ansible.builtin.debug:
-        msg: "{{ lookup('file', 'temperature.csv') | community.general.from_csv | unique(attribute='time') | sort(attribute='time') }}"
+      ansible.builtin.set_fact:
+        temperature: "{{ lookup('file', 'temperature.csv') | community.general.from_csv | unique(attribute='time') | sort(attribute='time') }}"
       delegate_to: localhost
-      run_once: true
+
+    - name: Get Paris Weather URI
+      ansible.builtin.uri:
+        url: https://api.open-meteo.com/v1/forecast?latitude=48.86&longitude=2.33&current=temperature_2m
+        return_content: true
+      register: weather_content
+      delegate_to: localhost
+
+    - name: Is Paris warmer?
+      ansible.builtin.debug:
+        msg: "{{ weather_content.content }}"
