@@ -50,17 +50,8 @@
   name: TP6 / database
   become: true
   gather_facts: false
+  vars_files:
+    - vars/db.yaml
 
-  tasks:
-    - name: Install dependencies
-      ansible.builtin.apt:
-        name: mysql-server
-        state: absent
-
-    - name: Update packages facts
-      ansible.builtin.package_facts:
-        manager: auto
-    
-    - name: Install mariadb
-      ansible.builtin.include_role:
-        name: geerlingguy.mysql
+  roles:
+    - { role: geerlingguy.mysql , tag: ["always","mysql"] }

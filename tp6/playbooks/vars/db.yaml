@@ -1,7 +1,6 @@
 mysql_packages:
-  - mariadb-client
-  - mariadb-server>=10
-mysql_daemon: mariadb
+  - mysql
+  - mysql-server>=8
 mysql_root_password: super-secure-password
 mysql_databases:
   - name: example_db
