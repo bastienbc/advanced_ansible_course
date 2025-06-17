@@ -1,5 +1,5 @@
 - hosts: Master
-  name: play with filters
+  name: Play with filters
 
   tasks:
     - name: Read CSV
@@ -14,6 +14,12 @@
       register: weather_content
       delegate_to: localhost
 
-    - name: Is Paris warmer?
-      ansible.builtin.debug:
-        msg: "{{ weather_content.content }}"
+    - name: Get Paris Weather
+      ansible.builtin.set_fact:
+        paris_weather: "{{ (weather_content.content | ansible.builtin.from_json).current }}"
+      delegate_to: localhost
+
+    - name: Which is warmer
+      ansible.builtin.debug: # Soucis: il faut comparer l'heure et pas toute la date
+        msg: "{{ (temperature | selectattr('time','equalto',paris_weather.time) ) }}" # .temperature < paris_weather.temperature_2m }}"
+      delegate_to: localhost
