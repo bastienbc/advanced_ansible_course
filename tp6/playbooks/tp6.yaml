@@ -55,14 +55,12 @@
     - name: Install dependencies
       ansible.builtin.apt:
         name: mysql-server
-        state: present
+        state: absent
 
     - name: Update packages facts
       ansible.builtin.package_facts:
         manager: auto
-
-    - name: Start services
-      ansible.builtin.service:
-        name: mysql
-        state: started
-      when: '"mysql-server" in ansible_facts.packages'
+    
+    - name: Install mariadb
+      ansible.builtin.include_role:
+        name: geerlingguy.mysql
