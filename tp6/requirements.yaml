@@ -1,3 +1,5 @@
 roles:
-  - name: Oefenweb.wordpress
   - name: geerlingguy.mysql
+  - name: geerlingguy.apache
+  - name: geerlingguy.php
+  - name: geerlingguy.apache-php-fpm
