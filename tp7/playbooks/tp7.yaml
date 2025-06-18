@@ -4,7 +4,14 @@
   tasks:
     - name: Read CSV
       ansible.builtin.set_fact:
-        temperature: "{{ lookup('file', 'temperature.csv') | community.general.from_csv | unique(attribute='time') | sort(attribute='time') }}"
+        temperature: >
+          {{ 
+           lookup('file', 'temperature.csv')
+             | community.general.from_csv
+             | unique(attribute='time')
+             | sort(attribute='time')
+             | add_hour
+          }}
       delegate_to: localhost
 
     - name: Get Paris Weather URI
@@ -21,5 +28,15 @@
 
     - name: Which is warmer
       ansible.builtin.debug: # Soucis: il faut comparer l'heure et pas toute la date
-        msg: "{{ (temperature | selectattr('time','equalto',paris_weather.time) ) }}" # .temperature < paris_weather.temperature_2m }}"
+        msg: >-
+          {{ 
+            ((
+              temperature
+              | selectattr('hour','equalto',paris_weather.time[-5:]))[0].temperature
+              | float < paris_weather.temperature_2m
+            ) | ternary(
+              "Paris is warmer",
+              "CSV is warmer"
+              )
+          }}
       delegate_to: localhost
