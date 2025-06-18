@@ -26,7 +26,7 @@
   tags: ["always", "wordpress"]
 
   roles:
+    - { role: bbc.ansible_course.setup_wordpress, tags: ["always", "wordpress"] }
     - { role: geerlingguy.php, tags: ["always", "php"] }
     - { role: geerlingguy.apache, tags: ["always", "apache"]}
     - { role: geerlingguy.apache-php-fpm, tags: ["always", "apache", "php", "apache-php-fpm"] }
-    - { role: bbc.ansible_course.setup_wordpress, tags: ["always", "wordpress"] }

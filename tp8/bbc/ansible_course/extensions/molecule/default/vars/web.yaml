@@ -1,0 +1,21 @@
+# Wordpress vars
+
+wordpress_db_name: wordpress
+wordpress_db_username: wordpress
+wordpress_db_password: wordpress_secure_password
+
+# PHP & apache vars
+php_packages_extra:
+  - php-mysql
+
+php_enable_php_fpm: true
+
+apache_remove_default_vhost: true
+apache_create_vhosts: true
+apache_mods_enabled:
+  - proxy
+apache_vhosts:
+  - servername: "wordpress.local"
+    documentroot: "/var/www/wordpress/"
+    extra_parameters: |
+          ProxyPassMatch ^/(.*\.php(/.*)?)$ "fcgi://127.0.0.1:9000/var/www/wordpress"
