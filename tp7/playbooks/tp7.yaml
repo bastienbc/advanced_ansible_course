@@ -16,7 +16,6 @@
              | sort(attribute='time')
              | add_hour
           }}
-      delegate_to: localhost
 
     - name: Get {{ location }} Weather URI
       ansible.builtin.uri:
@@ -28,7 +27,6 @@
     - name: Get {{ location }} Weather
       ansible.builtin.set_fact:
         location_weather: "{{ (weather_content.content | ansible.builtin.from_json).current }}"
-      delegate_to: localhost
 
     - name: Which is warmer
       ansible.builtin.debug: # Soucis: il faut comparer l'heure et pas toute la date
@@ -43,4 +41,3 @@
               "CSV is warmer"
               )
           }}
-      delegate_to: localhost
