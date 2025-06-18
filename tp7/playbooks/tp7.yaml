@@ -9,7 +9,7 @@
     - name: Read CSV
       ansible.builtin.set_fact:
         temperature: >
-          {{ 
+          {{
            lookup('file', 'temperature.csv')
              | community.general.from_csv
              | unique(attribute='time')
@@ -17,21 +17,21 @@
              | add_hour
           }}
 
-    - name: Get {{ location }} Weather URI
+    - name: Get Weather URI for {{ location }}
       ansible.builtin.uri:
         url: "https://api.open-meteo.com/v1/forecast?latitude={{ lat }}&longitude={{ long }}&current=temperature_2m"
         return_content: true
       register: weather_content
       delegate_to: localhost
 
-    - name: Get {{ location }} Weather
+    - name: Get Weather JSON for {{ location }}
       ansible.builtin.set_fact:
         location_weather: "{{ (weather_content.content | ansible.builtin.from_json).current }}"
 
     - name: Which is warmer
       ansible.builtin.debug: # Soucis: il faut comparer l'heure et pas toute la date
         msg: >-
-          {{ 
+          {{
             ((
               temperature
               | selectattr('hour','equalto',location_weather.time[-5:-2]+'00'))[0].temperature
