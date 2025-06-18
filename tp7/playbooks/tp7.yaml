@@ -1,5 +1,9 @@
 - hosts: Master
   name: Play with filters
+  vars:
+    location: "Montagne de thiey"
+    lat: 43.73
+    long: 6.84
 
   tasks:
     - name: Read CSV
@@ -14,16 +18,16 @@
           }}
       delegate_to: localhost
 
-    - name: Get Paris Weather URI
+    - name: Get {{ location }} Weather URI
       ansible.builtin.uri:
-        url: https://api.open-meteo.com/v1/forecast?latitude=48.86&longitude=2.33&current=temperature_2m
+        url: "https://api.open-meteo.com/v1/forecast?latitude={{ lat }}&longitude={{ long }}&current=temperature_2m"
         return_content: true
       register: weather_content
       delegate_to: localhost
 
-    - name: Get Paris Weather
+    - name: Get {{ location }} Weather
       ansible.builtin.set_fact:
-        paris_weather: "{{ (weather_content.content | ansible.builtin.from_json).current }}"
+        location_weather: "{{ (weather_content.content | ansible.builtin.from_json).current }}"
       delegate_to: localhost
 
     - name: Which is warmer
@@ -32,10 +36,10 @@
           {{ 
             ((
               temperature
-              | selectattr('hour','equalto',paris_weather.time[-5:]))[0].temperature
-              | float < paris_weather.temperature_2m
+              | selectattr('hour','equalto',location_weather.time[-5:-2]+'00'))[0].temperature
+              | float < location_weather.temperature_2m
             ) | ternary(
-              "Paris is warmer",
+              location + ' is warmer',
               "CSV is warmer"
               )
           }}
