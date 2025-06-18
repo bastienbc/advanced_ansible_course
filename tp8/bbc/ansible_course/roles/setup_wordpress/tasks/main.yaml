@@ -1,0 +1,23 @@
+- name: Create wordpress directory
+  ansible.builtin.file:
+    path: /var/www/wordpress/
+    state: directory
+    recurse: true
+
+- name: Download and unarchive wordpress
+  ansible.builtin.unarchive:
+    src: https://fr.wordpress.org/latest-fr_FR.zip
+    dest: /var/www/
+    remote_src: true
+  tags:
+    - always
+    - archive
+
+- name: Configure wordpress wp-config.php
+  ansible.builtin.template:
+    src: wp-config.php.j2
+    dest: /var/www/wordpress/wp-config.php
+    mode: '0644'
+  tags:
+    - always
+    - wp-config

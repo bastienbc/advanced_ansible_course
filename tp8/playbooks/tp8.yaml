@@ -1,0 +1,36 @@
+- hosts: web:db
+  name: TP6 / prepare
+  become: true
+  tags: ["always","prepare"]
+
+  tasks:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+- hosts: db
+  name: TP6 / database
+  become: true
+  gather_facts: false
+  tags: ["always", "database"]
+  vars_files:
+    - vars/db.yaml
+
+  roles:
+    - { role: geerlingguy.mysql , tag: ["always","database"] }
+
+- name: Installer et configurer wordpress
+  hosts: web
+  become: true
+  become_user: root
+
+  tags: ["always", "wordpress"]
+  vars_files:
+    - vars/web.yaml
+
+  roles:
+    - { role: geerlingguy.php, tags: ["always","php"] }
+    - { role: geerlingguy.apache, tags: ["always","apache"]}
+    - { role: geerlingguy.apache-php-fpm, tags: ["always","apache","php","apache-php-fpm"] }
+    - { role: bbc.ansible_course.setup_wordpress, tags: ["always","wordpress"] }
